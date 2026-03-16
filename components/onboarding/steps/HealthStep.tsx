@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -11,9 +12,10 @@ interface Props {
 }
 
 export function HealthStep({ form }: Props) {
+  const [disclaimerTouched, setDisclaimerTouched] = useState(false);
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     watch,
     setValue,
   } = form;
@@ -40,7 +42,7 @@ export function HealthStep({ form }: Props) {
       <div className="rounded-lg border p-4 bg-muted/50 space-y-3">
         <p className="text-sm font-medium">Health Disclaimer</p>
         <p className="text-sm text-muted-foreground">
-          The information and recommendations provided by TrainerAI are for
+          The information and recommendations provided by Ai Coach are for
           general wellness purposes only and do not constitute medical advice.
           Please consult a qualified medical professional before starting any
           new exercise or diet programme, especially if you have existing health
@@ -50,15 +52,16 @@ export function HealthStep({ form }: Props) {
           <Checkbox
             id="disclaimer_accepted"
             checked={disclaimerAccepted ?? false}
-            onCheckedChange={(checked) =>
-              setValue("disclaimer_accepted", !!checked)
-            }
+            onCheckedChange={(checked) => {
+              setDisclaimerTouched(true);
+              setValue("disclaimer_accepted", !!checked);
+            }}
           />
           <Label htmlFor="disclaimer_accepted">
             I understand and accept this disclaimer
           </Label>
         </div>
-        {errors.disclaimer_accepted && (
+        {errors.disclaimer_accepted && (isSubmitted || disclaimerTouched) && (
           <p className="text-sm text-destructive">
             {errors.disclaimer_accepted.message}
           </p>

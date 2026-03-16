@@ -16,7 +16,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { login, user } = useAuth();
 
-  async function handleSuccess(profile: UserProfile) {
+  async function handleSuccess(_profile: UserProfile) {
     if (user) {
       login({ ...user, onboarding_completed: true });
     }
