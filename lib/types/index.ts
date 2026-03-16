@@ -1,3 +1,17 @@
+export interface ChatSession {
+  id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  session: string;
+  role: "user" | "coach";
+  content: string;
+  created_at: string;
+}
+
 export interface User {
   user_id: string;
   email: string;
