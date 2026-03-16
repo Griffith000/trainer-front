@@ -1,8 +1,8 @@
 "use client";
 
-import { UseFormReturn } from "react-hook-form";
-import { Label } from "@/components/ui/label";
+import type { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { OnboardingFormData } from "../OnboardingWizard";
 
