@@ -47,3 +47,17 @@ export interface UserProfile {
   disclaimer_accepted_at: string;
   updated_at: string;
 }
+
+export interface WorkoutPlan {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+}
+
+export interface DietPlan {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+}

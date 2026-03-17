@@ -7,8 +7,13 @@ import {
 import type { NextRequest } from "next/server";
 
 import { getProfile, saveMessages } from "@/app/chat/actions";
-import { getUserProfileTool } from "@/lib/ai/tools/user";
+import { getDietPlansTool, saveDietPlanTool } from "@/lib/ai/tools/diet-plans";
 import { updateGoalTool } from "@/lib/ai/tools/update-goal";
+import { getUserProfileTool } from "@/lib/ai/tools/user";
+import {
+  getWorkoutPlansTool,
+  saveWorkoutPlanTool,
+} from "@/lib/ai/tools/workout-plans";
 import { DEFAULT_MODEL, getModel } from "@/lib/models";
 import type { UserProfile } from "@/lib/types";
 
@@ -33,6 +38,9 @@ function buildSystemPrompt(profile: UserProfile): string {
     "Keep responses concise (≤3 sentences for simple questions). Only include plans or tips when explicitly asked.",
     "When the user clearly states a new fitness goal, target weight, or activity level, call the updateGoal tool to save it. If the tool returns success:false, tell the user the update failed and show the error — never claim the goal was updated when the tool failed.",
     "When the user asks for a personalized plan (workout, meal, program), call the getUserProfile tool first to get fresh data, then craft the plan using the returned profile.",
+    "When you generate a workout plan, call saveWorkoutPlan immediately after presenting it to save it.",
+    "When you generate a diet or nutrition plan, call saveDietPlan immediately after presenting it.",
+    "When the user asks to see their saved plans, use getWorkoutPlans or getDietPlans.",
     "",
     `The user's name is ${profile.full_name}.`,
     `They are approximately ${age} years old.`,
@@ -74,7 +82,14 @@ export async function POST(req: NextRequest) {
     maxOutputTokens: 512,
     temperature: 0.4,
     stopWhen: stepCountIs(3),
-    tools: { updateGoal: updateGoalTool, getUserProfile: getUserProfileTool },
+    tools: {
+      updateGoal: updateGoalTool,
+      getUserProfile: getUserProfileTool,
+      saveWorkoutPlan: saveWorkoutPlanTool,
+      getWorkoutPlans: getWorkoutPlansTool,
+      saveDietPlan: saveDietPlanTool,
+      getDietPlans: getDietPlansTool,
+    },
 
     onFinish: async ({ text }) => {
       if (!session_id || !lastUserText || !text) return;
