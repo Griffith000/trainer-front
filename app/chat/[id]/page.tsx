@@ -28,7 +28,12 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
-import { ToolCall, ToolResult } from "@/components/ai-elements/tool-invocation";
+import {
+  PlanList,
+  ToolCall,
+  ToolResult,
+} from "@/components/ai-elements/tool-invocation";
+import { DownloadIcon } from "lucide-react";
 import { api } from "@/lib/api/client";
 import type { ChatMessage } from "@/lib/types";
 
@@ -58,6 +63,16 @@ function useSessionMessages(sessionId: string) {
       return data;
     },
   });
+}
+
+function downloadMarkdown(filename: string, content: string) {
+  const blob = new Blob([content], { type: "text/markdown" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${filename}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 export default function SessionPage() {
@@ -170,9 +185,24 @@ export default function SessionPage() {
                             state?: string;
                             output?: {
                               success?: boolean;
-                              fitness_goal?: string;
-                              full_name?: string;
                               error?: string;
+                              // getUserProfile
+                              full_name?: string;
+                              fitness_goal?: string;
+                              current_weight_kg?: string;
+                              target_weight_kg?: string;
+                              activity_level?: string;
+                              // saveWorkoutPlan / saveDietPlan
+                              id?: string;
+                              title?: string;
+                              content?: string;
+                              // getWorkoutPlans / getDietPlans
+                              plans?: Array<{
+                                id: string;
+                                title: string;
+                                content: string;
+                                created_at: string;
+                              }>;
                             };
                           }>
                         )
@@ -216,10 +246,136 @@ export default function SessionPage() {
                                   success={p.output?.success ?? false}
                                   summary={
                                     p.output?.success
-                                      ? `Profile loaded — ${p.output.full_name}`
+                                      ? `Profile loaded — ${p.output.full_name} | Goal: ${p.output.fitness_goal} | ${p.output.current_weight_kg}kg → ${p.output.target_weight_kg}kg`
                                       : (p.output?.error ??
                                         "Profile fetch failed")
                                   }
+                                />
+                              );
+                            }
+                            if (p.type === "tool-saveWorkoutPlan") {
+                              if (!isDone)
+                                return (
+                                  <ToolCall
+                                    key={key}
+                                    label="Saving workout plan…"
+                                  />
+                                );
+                              return (
+                                <ToolResult
+                                  key={key}
+                                  success={p.output?.success ?? false}
+                                  summary={
+                                    p.output?.success
+                                      ? (p.output.title ?? "Workout plan saved")
+                                      : (p.output?.error ?? "Save failed")
+                                  }
+                                  actions={
+                                    p.output?.success && p.output.content ? (
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          downloadMarkdown(
+                                            p.output?.title ?? "workout-plan",
+                                            p.output?.content ?? "",
+                                          )
+                                        }
+                                        className="ml-1 rounded p-0.5 hover:bg-green-100 dark:hover:bg-green-800/30"
+                                        title="Download"
+                                      >
+                                        <DownloadIcon className="h-3 w-3" />
+                                      </button>
+                                    ) : null
+                                  }
+                                />
+                              );
+                            }
+                            if (p.type === "tool-saveDietPlan") {
+                              if (!isDone)
+                                return (
+                                  <ToolCall
+                                    key={key}
+                                    label="Saving diet plan…"
+                                  />
+                                );
+                              return (
+                                <ToolResult
+                                  key={key}
+                                  success={p.output?.success ?? false}
+                                  summary={
+                                    p.output?.success
+                                      ? (p.output.title ?? "Diet plan saved")
+                                      : (p.output?.error ?? "Save failed")
+                                  }
+                                  actions={
+                                    p.output?.success && p.output.content ? (
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          downloadMarkdown(
+                                            p.output?.title ?? "diet-plan",
+                                            p.output?.content ?? "",
+                                          )
+                                        }
+                                        className="ml-1 rounded p-0.5 hover:bg-green-100 dark:hover:bg-green-800/30"
+                                        title="Download"
+                                      >
+                                        <DownloadIcon className="h-3 w-3" />
+                                      </button>
+                                    ) : null
+                                  }
+                                />
+                              );
+                            }
+                            if (p.type === "tool-getWorkoutPlans") {
+                              if (!isDone)
+                                return (
+                                  <ToolCall
+                                    key={key}
+                                    label="Loading your workout plans…"
+                                  />
+                                );
+                              if (!p.output?.success)
+                                return (
+                                  <ToolResult
+                                    key={key}
+                                    success={false}
+                                    summary={
+                                      p.output?.error ?? "Failed to load plans"
+                                    }
+                                  />
+                                );
+                              return (
+                                <PlanList
+                                  key={key}
+                                  plans={p.output.plans ?? []}
+                                  onDownload={downloadMarkdown}
+                                />
+                              );
+                            }
+                            if (p.type === "tool-getDietPlans") {
+                              if (!isDone)
+                                return (
+                                  <ToolCall
+                                    key={key}
+                                    label="Loading your diet plans…"
+                                  />
+                                );
+                              if (!p.output?.success)
+                                return (
+                                  <ToolResult
+                                    key={key}
+                                    success={false}
+                                    summary={
+                                      p.output?.error ?? "Failed to load plans"
+                                    }
+                                  />
+                                );
+                              return (
+                                <PlanList
+                                  key={key}
+                                  plans={p.output.plans ?? []}
+                                  onDownload={downloadMarkdown}
                                 />
                               );
                             }
