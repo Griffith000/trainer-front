@@ -6,10 +6,25 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { LogoutButton } from "@/components/auth/LogoutButton";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { api } from "@/lib/api/client";
-import type { ChatSession } from "@/lib/types";
+import type { ChatSession, UserProfile } from "@/lib/types";
 import { cn } from "@/lib/utils";
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 function formatSessionDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -29,6 +44,14 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const { data: profile } = useQuery<UserProfile>({
+    queryKey: ["user-profile"],
+    queryFn: async () => {
+      const { data } = await api.get<UserProfile>("/api/profile/");
+      return data;
+    },
+  });
 
   const { data: sessions = [] } = useQuery<ChatSession[]>({
     queryKey: ["chat-sessions"],
@@ -99,7 +122,27 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
         })}
       </div>
 
-      <div className="border-t px-3 py-3">
+      <div className="border-t px-3 py-3 flex flex-col gap-2">
+        {profile && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors"
+                >
+                  <Avatar className="h-7 w-7">
+                    <AvatarFallback className="text-xs">
+                      {getInitials(profile.full_name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm truncate">{profile.full_name}</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">{profile.full_name}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         <LogoutButton />
       </div>
     </aside>
