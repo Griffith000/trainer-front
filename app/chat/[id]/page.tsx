@@ -93,8 +93,11 @@ export default function SessionPage() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally depends only on status and messages.length
   useEffect(() => {
     if (status === "ready" && messages.length === 2 && !titleGenerated) {
-      const firstUserMsg = messages[0]?.content;
-      if (typeof firstUserMsg === "string" && firstUserMsg) {
+      const firstUserMsg = messages[0]?.parts
+        .filter((p) => p.type === "text")
+        .map((p) => (p as { type: "text"; text: string }).text)
+        .join("");
+      if (firstUserMsg) {
         setTitleGenerated(true);
         generateSessionTitle(sessionId, firstUserMsg).then(() => {
           queryClient.invalidateQueries({ queryKey: ["chat-sessions"] });
