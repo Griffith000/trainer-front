@@ -2,6 +2,7 @@ export interface ChatSession {
   id: string;
   created_at: string;
   updated_at: string;
+  title?: string;
 }
 
 export interface ChatMessage {
@@ -21,7 +22,7 @@ export interface User {
 export interface UserProfile {
   full_name: string;
   date_of_birth: string;
-  gender: "male" | "female" | "prefer_not_to_say";
+  gender: "male" | "female" | "other" | "prefer_not_to_say";
   current_weight_kg: string;
   height_cm: string;
   target_weight_kg: string;
