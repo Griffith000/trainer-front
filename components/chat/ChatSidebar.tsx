@@ -6,12 +6,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { api } from "@/lib/api/client";
 import { useAuth } from "@/lib/auth/context";
 import type { ChatSession, UserProfile } from "@/lib/types";
@@ -146,28 +140,19 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
       </div>
 
       <div className="border-t px-3 py-2 flex items-center gap-2">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/profile"
-                className="flex flex-1 items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors min-w-0"
-              >
-                <Avatar className="h-7 w-7 shrink-0">
-                  <AvatarFallback className="text-xs">
-                    {profile ? getInitials(profile.full_name) : "?"}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm truncate">
-                  {profile?.full_name ?? "Profile"}
-                </span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              {profile?.full_name ?? "Profile"}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Link
+          href="/profile"
+          className="flex flex-1 items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors min-w-0"
+        >
+          <Avatar className="h-7 w-7 shrink-0">
+            <AvatarFallback className="text-xs">
+              {profile ? getInitials(profile.full_name) : "?"}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-sm truncate">
+            {profile?.full_name ?? "Profile"}
+          </span>
+        </Link>
         <Button
           variant="ghost"
           size="icon"
