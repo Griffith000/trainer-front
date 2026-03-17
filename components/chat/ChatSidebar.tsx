@@ -90,7 +90,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
   }
 
   return (
-    <aside className="flex w-60 flex-shrink-0 flex-col border-r bg-muted/30">
+    <aside className="flex h-full w-60 flex-shrink-0 flex-col border-r bg-muted/30">
       <div className="flex items-center justify-between px-3 py-3">
         {onToggle && (
           <Button
