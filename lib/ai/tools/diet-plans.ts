@@ -44,6 +44,7 @@ export const saveDietPlanTool = tool({
       success: true as const,
       id: plan.id as string,
       title: plan.title as string,
+      content,
     };
   },
 });
