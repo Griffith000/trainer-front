@@ -1,11 +1,9 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { PanelLeftIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { LogOutIcon, PanelLeftIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-
-import { LogoutButton } from "@/components/auth/LogoutButton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { api } from "@/lib/api/client";
+import { useAuth } from "@/lib/auth/context";
 import type { ChatSession, UserProfile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +43,12 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { logout } = useAuth();
+
+  async function handleLogout() {
+    await logout();
+    router.push("/login");
+  }
 
   const { data: profile } = useQuery<UserProfile>({
     queryKey: ["user-profile"],
@@ -140,28 +145,38 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
         })}
       </div>
 
-      <div className="border-t px-3 py-3 flex flex-col gap-2">
-        {profile && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors"
-                >
-                  <Avatar className="h-7 w-7">
-                    <AvatarFallback className="text-xs">
-                      {getInitials(profile.full_name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm truncate">{profile.full_name}</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">{profile.full_name}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-        <LogoutButton />
+      <div className="border-t px-3 py-2 flex items-center gap-2">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/profile"
+                className="flex flex-1 items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors min-w-0"
+              >
+                <Avatar className="h-7 w-7 shrink-0">
+                  <AvatarFallback className="text-xs">
+                    {profile ? getInitials(profile.full_name) : "?"}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm truncate">
+                  {profile?.full_name ?? "Profile"}
+                </span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              {profile?.full_name ?? "Profile"}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleLogout}
+          title="Sign out"
+          className="shrink-0"
+        >
+          <LogOutIcon className="h-4 w-4" />
+        </Button>
       </div>
     </aside>
   );
