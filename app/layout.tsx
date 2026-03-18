@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TrainerAI",
+  title: "AI Coach",
   description: "Your AI fitness coach",
 };
 

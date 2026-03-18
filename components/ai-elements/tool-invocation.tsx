@@ -96,9 +96,7 @@ export const PlanList = ({ plans, onDownload }: PlanListProps) => {
             <span className="flex-1 truncate">{plan.title}</span>
             <button
               type="button"
-              onClick={() =>
-                setExpanded(expanded === plan.id ? null : plan.id)
-              }
+              onClick={() => setExpanded(expanded === plan.id ? null : plan.id)}
               className="flex items-center gap-0.5 rounded px-1.5 py-0.5 hover:bg-green-100 dark:hover:bg-green-800/30"
               title="Preview"
             >
