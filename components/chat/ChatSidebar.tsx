@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { api } from "@/lib/api/client";
 import { useAuth } from "@/lib/auth/context";
 import type { ChatSession, UserProfile } from "@/lib/types";
@@ -96,7 +97,12 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
             <PanelLeftIcon className="h-4 w-4" />
           </Button>
         )}
-        <span className="text-sm font-semibold">AI Coach</span>
+        <Link
+          href="/"
+          className="text-sm font-semibold bg-gradient-to-r from-yellow-500 via-orange-500 to-primary bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+        >
+          AI Coach
+        </Link>
         <Button
           variant="ghost"
           size="icon"
@@ -153,6 +159,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
             {profile?.full_name ?? "Profile"}
           </span>
         </Link>
+        <ThemeSwitcher size="sm" align="start" />
         <Button
           variant="ghost"
           size="icon"

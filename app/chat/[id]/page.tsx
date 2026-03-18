@@ -3,11 +3,10 @@
 import { useChat } from "@ai-sdk/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DefaultChatTransport } from "ai";
+import { DownloadIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-
 import { generateSessionTitle } from "@/app/chat/actions";
-
 import {
   Conversation,
   ConversationContent,
@@ -33,7 +32,6 @@ import {
   ToolCall,
   ToolResult,
 } from "@/components/ai-elements/tool-invocation";
-import { DownloadIcon } from "lucide-react";
 import { api } from "@/lib/api/client";
 import type { ChatMessage } from "@/lib/types";
 
@@ -160,7 +158,7 @@ export default function SessionPage() {
             {messages.length === 0 && !isStreaming ? (
               <>
                 <ConversationEmptyState
-                  title="Start a conversation"
+                  title="Start a conversation!"
                   description="Ask your AI coach anything about fitness, nutrition, or your goals."
                 />
                 <Suggestions className="mt-4 justify-center">
@@ -412,8 +410,11 @@ export default function SessionPage() {
         </Conversation>
       )}
 
-      <div className="border-t px-4 py-4">
-        <PromptInput onSubmit={handleSubmit} className="mx-auto max-w-2xl">
+      <div className="flex justify-center px-4 py-4">
+        <PromptInput
+          onSubmit={handleSubmit}
+          className="w-full max-w-3xl border-t pt-4"
+        >
           <PromptInputTextarea
             placeholder="Ask your coach anything…"
             disabled={isStreaming || isInitialising}
