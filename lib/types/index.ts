@@ -1,3 +1,18 @@
+export interface ChatSession {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  title?: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  session: string;
+  role: "user" | "coach";
+  content: string;
+  created_at: string;
+}
+
 export interface User {
   user_id: string;
   email: string;
@@ -7,7 +22,7 @@ export interface User {
 export interface UserProfile {
   full_name: string;
   date_of_birth: string;
-  gender: "male" | "female" | "prefer_not_to_say";
+  gender: "male" | "female" | "other" | "prefer_not_to_say";
   current_weight_kg: string;
   height_cm: string;
   target_weight_kg: string;
@@ -31,4 +46,18 @@ export interface UserProfile {
   health_notes: string;
   disclaimer_accepted_at: string;
   updated_at: string;
+}
+
+export interface WorkoutPlan {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+}
+
+export interface DietPlan {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
 }

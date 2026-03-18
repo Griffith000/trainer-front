@@ -20,7 +20,7 @@ const schema = z.object({
   date_of_birth: z
     .string()
     .min(1, "Date of birth is required")
-    .refine((v) => !isNaN(Date.parse(v)) && new Date(v) <= new Date(), {
+    .refine((v) => !Number.isNaN(Date.parse(v)) && new Date(v) <= new Date(), {
       message: "Date of birth cannot be in the future",
     }),
   gender: z.enum(["male", "female", "prefer_not_to_say"], {
@@ -119,10 +119,7 @@ export function OnboardingWizard({ onSuccess }: Props) {
     setServerError(null);
     try {
       const { disclaimer_accepted: _, ...payload } = data;
-      const response = await api.post<UserProfile>(
-        "/api/profile/",
-        payload,
-      );
+      const response = await api.post<UserProfile>("/api/profile/", payload);
       sessionStorage.removeItem(STORAGE_KEY);
       onSuccess(response.data);
     } catch (err: unknown) {
