@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import type { User } from "@/lib/types";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
   const cookieHeader = request.headers.get("cookie") ?? "";
   const { pathname } = request.nextUrl;
