@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { LogOutIcon, PanelLeftIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { LogOutIcon, PanelLeftIcon, PlusIcon, Trash2Icon, BookOpenIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -85,7 +85,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
   }
 
   return (
-    <aside className="flex h-full w-60 flex-shrink-0 flex-col border-r bg-muted/30">
+    <><aside className="flex h-full w-60 flex-shrink-0 flex-col border-r bg-muted/30">
       <div className="flex items-center justify-between px-3 py-3">
         {onToggle && (
           <Button
@@ -111,9 +111,19 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
         >
           <PlusIcon className="h-4 w-4" />
         </Button>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-2 py-1">
+    </div><div className="px-3 py-2">
+        <Link
+          href="/plans/workout"
+          className={cn(
+            "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
+            pathname.startsWith("/plans") && "bg-muted text-primary"
+          )}
+        >
+          <BookOpenIcon className="h-4 w-4" />
+          My Plans
+        </Link>
+      </div><div className="flex-1 border-t overflow-y-auto px-2 py-2 mt-1">
+        <div className="text-xs font-medium text-muted-foreground px-2 pb-2 pt-1">Chats</div>
         {sorted.map((session) => {
           const isActive = pathname === `/chat/${session.id}`;
           return (
@@ -122,7 +132,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
                 href={`/chat/${session.id}`}
                 className={cn(
                   "flex w-full flex-col rounded-md px-3 py-2 pr-8 text-left text-sm transition-colors hover:bg-muted",
-                  isActive && "bg-muted font-medium",
+                  isActive && "bg-muted font-medium"
                 )}
               >
                 <span className="truncate text-foreground">
@@ -143,9 +153,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
             </div>
           );
         })}
-      </div>
-
-      <div className="border-t px-3 py-2 flex items-center gap-2">
+      </div><div className="border-t px-3 py-2 flex items-center gap-2">
         <Link
           href="/profile"
           className="flex flex-1 items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors min-w-0"
@@ -169,7 +177,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
         >
           <LogOutIcon className="h-4 w-4" />
         </Button>
-      </div>
-    </aside>
+      </div></>
+    </aside >
   );
 }
