@@ -64,7 +64,7 @@ export function PlanDialog({ plan, type, open, onOpenChange }: PlanDialogProps) 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col gap-0 p-0 overflow-hidden">
-        <DialogHeader className="flex-row items-start justify-between px-6 pt-6 pb-4 border-b gap-4">
+        <DialogHeader className="flex-row items-center justify-between px-6 pt-6 pb-4 border-b gap-4">
           <div className="flex-1 min-w-0">
             {isEditing ? (
               <input
@@ -88,7 +88,7 @@ export function PlanDialog({ plan, type, open, onOpenChange }: PlanDialogProps) 
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1 shrink-0">
             {isEditing ? (
               <Button
                 size="sm"
@@ -106,8 +106,9 @@ export function PlanDialog({ plan, type, open, onOpenChange }: PlanDialogProps) 
             ) : (
               <Button
                 size="icon"
-                variant="outline"
+                variant="ghost"
                 onClick={() => setIsEditing(true)}
+                className="text-muted-foreground hover:text-accent-foreground hover:bg-foreground/10"
               >
                 <PencilIcon className="h-4 w-4" />
               </Button>
