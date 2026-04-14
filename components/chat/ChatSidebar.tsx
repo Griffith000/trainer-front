@@ -1,7 +1,13 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { LogOutIcon, PanelLeftIcon, PlusIcon, Trash2Icon, BookOpenIcon } from "lucide-react";
+import {
+  LogOutIcon,
+  PanelLeftIcon,
+  PlusIcon,
+  Trash2Icon,
+  BookOpenIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -85,99 +91,106 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
   }
 
   return (
-    <><aside className="flex h-full w-60 flex-shrink-0 flex-col border-r bg-muted/30">
-      <div className="flex items-center justify-between px-3 py-3">
-        {onToggle && (
+    <>
+      <aside className="flex h-full w-60 flex-shrink-0 flex-col border-r bg-muted/30">
+        <div className="flex items-center justify-between px-3 py-3">
+          {onToggle && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onToggle}
+              title="Collapse sidebar"
+            >
+              <PanelLeftIcon className="h-4 w-4" />
+            </Button>
+          )}
+          <Link
+            href="/"
+            className="text-sm font-semibold bg-gradient-to-r from-yellow-500 via-orange-500 to-primary bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+          >
+            AI Coach
+          </Link>
           <Button
             variant="ghost"
             size="icon"
-            onClick={onToggle}
-            title="Collapse sidebar"
+            onClick={handleNewChat}
+            title="New chat"
           >
-            <PanelLeftIcon className="h-4 w-4" />
+            <PlusIcon className="h-4 w-4" />
           </Button>
-        )}
-        <Link
-          href="/"
-          className="text-sm font-semibold bg-gradient-to-r from-yellow-500 via-orange-500 to-primary bg-clip-text text-transparent hover:opacity-80 transition-opacity"
-        >
-          AI Coach
-        </Link>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleNewChat}
-          title="New chat"
-        >
-          <PlusIcon className="h-4 w-4" />
-        </Button>
-    </div><div className="px-3 py-2">
-        <Link
-          href="/plans/workout"
-          className={cn(
-            "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
-            pathname.startsWith("/plans") && "bg-muted text-primary"
-          )}
-        >
-          <BookOpenIcon className="h-4 w-4" />
-          My Plans
-        </Link>
-      </div><div className="flex-1 border-t overflow-y-auto px-2 py-2 mt-1">
-        <div className="text-xs font-medium text-muted-foreground px-2 pb-2 pt-1">Chats</div>
-        {sorted.map((session) => {
-          const isActive = pathname === `/chat/${session.id}`;
-          return (
-            <div key={session.id} className="group relative">
-              <Link
-                href={`/chat/${session.id}`}
-                className={cn(
-                  "flex w-full flex-col rounded-md px-3 py-2 pr-8 text-left text-sm transition-colors hover:bg-muted",
-                  isActive && "bg-muted font-medium"
-                )}
-              >
-                <span className="truncate text-foreground">
-                  {session.title || "New Chat"}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {formatSessionDate(session.updated_at)}
-                </span>
-              </Link>
-              <button
-                type="button"
-                onClick={(e) => handleDeleteSession(e, session.id)}
-                className="absolute right-1 top-1/2 -translate-y-1/2 rounded p-1 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-                title="Delete chat"
-              >
-                <Trash2Icon className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          );
-        })}
-      </div><div className="border-t px-3 py-2 flex items-center gap-2">
-        <Link
-          href="/profile"
-          className="flex flex-1 items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors min-w-0"
-        >
-          <Avatar className="h-7 w-7 shrink-0">
-            <AvatarFallback className="text-xs">
-              {profile ? getInitials(profile.full_name) : "?"}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm truncate">
-            {profile?.full_name ?? "Profile"}
-          </span>
-        </Link>
-        <ThemeSwitcher size="sm" align="start" />
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleLogout}
-          title="Sign out"
-          className="shrink-0"
-        >
-          <LogOutIcon className="h-4 w-4" />
-        </Button>
-      </div></>
-    </aside >
+        </div>
+        <div className="px-3 py-2">
+          <Link
+            href="/plans/workout"
+            className={cn(
+              "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
+              pathname.startsWith("/plans") && "bg-muted text-primary",
+            )}
+          >
+            <BookOpenIcon className="h-4 w-4" />
+            My Plans
+          </Link>
+        </div>
+        <div className="flex-1 border-t overflow-y-auto px-2 py-2 mt-1">
+          <div className="text-xs font-medium text-muted-foreground px-2 pb-2 pt-1">
+            Chats
+          </div>
+          {sorted.map((session) => {
+            const isActive = pathname === `/chat/${session.id}`;
+            return (
+              <div key={session.id} className="group relative">
+                <Link
+                  href={`/chat/${session.id}`}
+                  className={cn(
+                    "flex w-full flex-col rounded-md px-3 py-2 pr-8 text-left text-sm transition-colors hover:bg-muted",
+                    isActive && "bg-muted font-medium",
+                  )}
+                >
+                  <span className="truncate text-foreground">
+                    {session.title || "New Chat"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatSessionDate(session.updated_at)}
+                  </span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={(e) => handleDeleteSession(e, session.id)}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 rounded p-1 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+                  title="Delete chat"
+                >
+                  <Trash2Icon className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <div className="border-t px-3 py-2 flex items-center gap-2">
+          <Link
+            href="/profile"
+            className="flex flex-1 items-center gap-2 rounded-md px-1 py-1.5 hover:bg-muted transition-colors min-w-0"
+          >
+            <Avatar className="h-7 w-7 shrink-0">
+              <AvatarFallback className="text-xs">
+                {profile ? getInitials(profile.full_name) : "?"}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm truncate">
+              {profile?.full_name ?? "Profile"}
+            </span>
+          </Link>
+          <ThemeSwitcher size="sm" align="start" />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            title="Sign out"
+            className="shrink-0"
+          >
+            <LogOutIcon className="h-4 w-4" />
+          </Button>
+        </div>
+      </aside>
+    </>
   );
 }
