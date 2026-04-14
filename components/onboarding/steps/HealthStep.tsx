@@ -54,7 +54,7 @@ export function HealthStep({ form }: Props) {
             checked={disclaimerAccepted ?? false}
             onCheckedChange={(checked) => {
               setDisclaimerTouched(true);
-              setValue("disclaimer_accepted", !!checked);
+              setValue("disclaimer_accepted", checked as true);
             }}
           />
           <Label htmlFor="disclaimer_accepted">
