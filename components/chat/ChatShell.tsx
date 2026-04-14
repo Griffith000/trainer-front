@@ -1,8 +1,9 @@
 "use client";
 
-import { PanelLeftIcon } from "lucide-react";
+import { PanelLeftIcon, BookOpenIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -48,15 +49,21 @@ export function ChatShell({ children }: { children: React.ReactNode }) {
       <main className="relative flex flex-1 flex-col overflow-hidden">
         {/* Toggle button — shown when sidebar is closed or on mobile */}
         {(!isOpen || isMobile) && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute left-2 top-2 z-10"
-            onClick={toggle}
-            title={isOpen ? "Close sidebar" : "Open sidebar"}
-          >
-            <PanelLeftIcon className="h-4 w-4" />
-          </Button>
+          <div className="absolute left-2 top-2 z-10 flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggle}
+              title={isOpen ? "Close sidebar" : "Open sidebar"}
+            >
+              <PanelLeftIcon className="h-4 w-4" />
+            </Button>
+            <Link href="/plans/workout">
+              <Button variant="ghost" size="icon" title="My Plans">
+                <BookOpenIcon className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         )}
         {children}
       </main>
