@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
-import { PlanCard } from "@/components/plans/PlanCard";
+import { PlanListItem } from "@/components/plans/PlanListItem";
 import { Loader2Icon, FrownIcon } from "lucide-react";
 
 export default function WorkoutPlansPage() {
@@ -44,7 +44,7 @@ export default function WorkoutPlansPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {plans.map((plan: any) => (
-        <PlanCard key={plan.id} plan={plan} type="workout" />
+        <PlanListItem key={plan.id} plan={plan} type="workout" />
       ))}
     </div>
   );
