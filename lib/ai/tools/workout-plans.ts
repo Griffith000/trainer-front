@@ -1,23 +1,23 @@
 import { tool } from "ai";
-import { cookies } from "next/headers";
 import { z } from "zod";
+
+import { getAuthHeaders } from "./helpers";
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export const saveWorkoutPlanTool = tool({
   description:
-    "Save a workout plan you just generated to the user's plan library. Call this immediately after presenting a workout plan in chat.",
+    "Save a workout plan to the user's plan library. Call this ONLY when the user explicitly asks you to save a workout plan.",
   inputSchema: z.object({
     title: z
       .string()
       .describe("Short descriptive title, e.g. '3-Day Strength Program'"),
     content: z.string().describe("The full workout plan in markdown"),
-    session_id: z.string().optional().describe("Current chat session ID"),
+    session_id: z.string().uuid().optional().describe("Current chat session ID (UUID)"),
   }),
+  strict: true,
   execute: async ({ title, content, session_id }) => {
-    const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
-    const csrfToken = cookieStore.get("csrftoken")?.value ?? "";
+    const { cookie, csrfToken } = await getAuthHeaders();
 
     const body: Record<string, unknown> = { title, content };
     if (session_id) body.session_id = session_id;
@@ -26,7 +26,7 @@ export const saveWorkoutPlanTool = tool({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        cookie: cookieHeader,
+        cookie,
         "X-CSRFToken": csrfToken,
       },
       body: JSON.stringify(body),
@@ -53,12 +53,12 @@ export const getWorkoutPlansTool = tool({
   description:
     "Retrieve the user's saved workout plans. Call when the user asks to see, review, or continue a previous plan.",
   inputSchema: z.object({}),
+  strict: true,
   execute: async () => {
-    const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
+    const { cookie } = await getAuthHeaders();
 
     const res = await fetch(`${apiBase}/api/chat/workout-plans/`, {
-      headers: { cookie: cookieHeader },
+      headers: { cookie },
     });
 
     if (!res.ok) {
