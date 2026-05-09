@@ -6,17 +6,24 @@ import {
 } from "ai";
 import type { NextRequest } from "next/server";
 
+import { getModel, DEFAULT_MODEL } from "@/lib/models";
 import { getProfile, saveMessages } from "@/app/chat/actions";
 import { buildSystemPrompt } from "@/lib/ai/system-prompt";
 import { getDietPlansTool, saveDietPlanTool } from "@/lib/ai/tools/diet-plans";
 import { updateGoalTool } from "@/lib/ai/tools/update-goal";
 import { getUserProfileTool } from "@/lib/ai/tools/user";
 import {
-  getWorkoutPlansTool,
   saveWorkoutPlanTool,
+  getWorkoutPlansTool,
 } from "@/lib/ai/tools/workout-plans";
-import { DEFAULT_MODEL, getModel } from "@/lib/models";
+import {
+  getRoutinesTool,
+  addRoutineTool,
+  updateRoutineTool,
+  deleteRoutineTool,
+} from "@/lib/ai/tools/routines";
 
+// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
@@ -50,6 +57,10 @@ export async function POST(req: NextRequest) {
       getWorkoutPlans: getWorkoutPlansTool,
       saveDietPlan: saveDietPlanTool,
       getDietPlans: getDietPlansTool,
+      getRoutines: getRoutinesTool,
+      addRoutine: addRoutineTool,
+      updateRoutine: updateRoutineTool,
+      deleteRoutine: deleteRoutineTool,
     },
 
     onFinish: async ({ text }) => {

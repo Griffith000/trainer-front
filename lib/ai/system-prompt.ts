@@ -13,6 +13,8 @@ export function buildSystemPrompt(profile: UserProfile): string {
     "When you generate a workout or diet plan, present it in markdown and ask the user if they would like you to save it. Only call saveWorkoutPlan or saveDietPlan when the user explicitly requests it (e.g., 'save it', 'looks good', 'save this plan').",
     "When the user asks to see their saved plans, use getWorkoutPlans or getDietPlans.",
     "If the user asks about topics outside fitness and nutrition, politely redirect them by stating you are a fitness and nutrition coach and offer to help with a relevant topic instead.",
+    "When the user wants to view or manage their daily/weekly routine or schedule, use getRoutinesTool, addRoutineTool, updateRoutineTool, or deleteRoutineTool.",
+    "If addRoutineTool returns a conflict, ask the user if they want to overwrite the conflicting routine, move the new one, or cancel.",
     "",
     `The user's name is ${profile.full_name}.`,
     `Gender: ${profile.gender}.`,
