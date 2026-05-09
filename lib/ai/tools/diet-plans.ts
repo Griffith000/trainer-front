@@ -1,6 +1,7 @@
 import { tool } from "ai";
-import { cookies } from "next/headers";
 import { z } from "zod";
+
+import { getAuthHeaders } from "./helpers";
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -14,10 +15,9 @@ export const saveDietPlanTool = tool({
     content: z.string().describe("The full diet plan in markdown"),
     session_id: z.string().optional().describe("Current chat session ID"),
   }),
+  strict: true,
   execute: async ({ title, content, session_id }) => {
-    const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
-    const csrfToken = cookieStore.get("csrftoken")?.value ?? "";
+    const { cookie, csrfToken } = await getAuthHeaders();
 
     const body: Record<string, unknown> = { title, content };
     if (session_id) body.session_id = session_id;
@@ -26,7 +26,7 @@ export const saveDietPlanTool = tool({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        cookie: cookieHeader,
+        cookie,
         "X-CSRFToken": csrfToken,
       },
       body: JSON.stringify(body),
@@ -53,12 +53,12 @@ export const getDietPlansTool = tool({
   description:
     "Retrieve the user's saved diet plans. Call when the user asks to see, review, or continue a previous diet plan.",
   inputSchema: z.object({}),
+  strict: true,
   execute: async () => {
-    const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
+    const { cookie } = await getAuthHeaders();
 
     const res = await fetch(`${apiBase}/api/chat/diet-plans/`, {
-      headers: { cookie: cookieHeader },
+      headers: { cookie },
     });
 
     if (!res.ok) {

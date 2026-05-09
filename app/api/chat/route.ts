@@ -39,9 +39,10 @@ export async function POST(req: NextRequest) {
     model: getModel(DEFAULT_MODEL),
     system: buildSystemPrompt(profile),
     messages: await convertToModelMessages(messages),
-    maxOutputTokens: 512,
+    maxOutputTokens: 2048,
     temperature: 0.4,
     stopWhen: stepCountIs(5),
+    abortSignal: req.signal,
     tools: {
       updateGoal: updateGoalTool,
       getUserProfile: getUserProfileTool,
