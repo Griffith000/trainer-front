@@ -13,7 +13,7 @@ export const saveDietPlanTool = tool({
       .string()
       .describe("Short descriptive title, e.g. '7-Day Meal Plan'"),
     content: z.string().describe("The full diet plan in markdown"),
-    session_id: z.string().optional().describe("Current chat session ID"),
+    session_id: z.string().uuid().optional().describe("Current chat session ID (UUID)"),
   }),
   strict: true,
   execute: async ({ title, content, session_id }) => {
