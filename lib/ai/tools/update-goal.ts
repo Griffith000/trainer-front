@@ -1,6 +1,7 @@
 import { tool } from "ai";
-import { cookies } from "next/headers";
 import { z } from "zod";
+
+import { getAuthHeaders } from "./helpers";
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -30,10 +31,9 @@ export const updateGoalTool = tool({
   description:
     "Update the user's fitness goal, target weight, or activity level when they explicitly state a change. Only call when the user clearly expresses a new goal or target.",
   inputSchema,
+  strict: true,
   execute: async (input) => {
-    const cookieStore = await cookies();
-    const cookieHeader = cookieStore.toString();
-    const csrfToken = cookieStore.get("csrftoken")?.value ?? "";
+    const { cookie, csrfToken } = await getAuthHeaders();
     const body: Record<string, unknown> = {};
     if (input.fitness_goal !== undefined)
       body.fitness_goal = input.fitness_goal;
@@ -46,7 +46,7 @@ export const updateGoalTool = tool({
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        cookie: cookieHeader,
+        cookie,
         "X-CSRFToken": csrfToken,
       },
       body: JSON.stringify(body),

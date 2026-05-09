@@ -1,6 +1,7 @@
 import { tool } from "ai";
-import { cookies } from "next/headers";
 import { z } from "zod";
+
+import { getAuthHeaders } from "./helpers";
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -8,12 +9,13 @@ export const getUserProfileTool = tool({
   description:
     "Fetch the user's current profile data (name, goal, weight, activity level, health notes) before generating a personalized plan or recommendation. Call this when the user asks for a workout plan, meal plan, or any personalized program.",
   inputSchema: z.object({}),
+  strict: true,
   execute: async () => {
-    const cookieHeader = (await cookies()).toString();
+    const { cookie } = await getAuthHeaders();
 
     const res = await fetch(`${apiBase}/api/profile/`, {
       method: "GET",
-      headers: { cookie: cookieHeader },
+      headers: { cookie },
     });
 
     if (!res.ok) {
