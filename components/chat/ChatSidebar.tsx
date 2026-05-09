@@ -66,13 +66,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
       const { data } = await api.get<ChatSession[]>("/api/chat/sessions/");
       return data;
     },
-    refetchOnWindowFocus: true,
   });
-
-  const sorted = [...sessions].sort(
-    (a, b) =>
-      new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
-  );
 
   async function handleDeleteSession(e: React.MouseEvent, sessionId: string) {
     e.preventDefault();
@@ -146,7 +140,7 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
           <div className="text-xs font-medium text-muted-foreground px-2 pb-2 pt-1">
             Chats
           </div>
-          {sorted.map((session) => {
+          {sessions.map((session) => {
             const isActive = pathname === `/chat/${session.id}`;
             return (
               <div key={session.id} className="group relative">

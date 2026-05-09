@@ -35,7 +35,7 @@ import {
 import { useDataStream } from "@/components/data-stream-provider";
 import { useAutoResume } from "@/hooks/use-auto-resume";
 import { api } from "@/lib/api/client";
-import type { ChatMessage } from "@/lib/types";
+import type { ChatMessage, ChatSession } from "@/lib/types";
 
 const SUGGESTIONS = [
   "Create a workout plan for me",
@@ -133,6 +133,10 @@ export default function SessionPage() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally depends only on status and messages.length
   useEffect(() => {
     if (status === "ready" && messages.length === 2 && !titleGenerated) {
+      const sessions = queryClient.getQueryData<ChatSession[]>(["chat-sessions"]);
+      const currentSession = sessions?.find((s) => s.id === sessionId);
+      if (currentSession?.title) return;
+
       const firstUserMsg = messages[0]?.parts
         .filter((p) => p.type === "text")
         .map((p) => (p as { type: "text"; text: string }).text)
