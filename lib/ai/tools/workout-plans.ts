@@ -6,7 +6,7 @@ const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export const saveWorkoutPlanTool = tool({
   description:
-    "Save a workout plan you just generated to the user's plan library. Call this immediately after presenting a workout plan in chat.",
+    "Save a workout plan to the user's plan library. Call this ONLY when the user explicitly asks you to save a workout plan.",
   inputSchema: z.object({
     title: z
       .string()

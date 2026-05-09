@@ -6,7 +6,7 @@ const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export const saveDietPlanTool = tool({
   description:
-    "Save a diet or nutrition plan you just generated to the user's plan library. Call this immediately after presenting a diet plan in chat.",
+    "Save a diet or nutrition plan to the user's plan library. Call this ONLY when the user explicitly asks you to save a diet plan.",
   inputSchema: z.object({
     title: z
       .string()
