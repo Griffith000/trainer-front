@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { api } from "@/lib/api/client";
 import {
   Dialog,
@@ -140,7 +141,7 @@ export function PlanDialog({ plan, type, open, onOpenChange }: PlanDialogProps) 
           ) : (
             <div className="prose prose-sm dark:prose-invert max-w-none">
               {content ? (
-                <ReactMarkdown>{content}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
               ) : (
                 <p className="text-muted-foreground italic">No content yet.</p>
               )}
