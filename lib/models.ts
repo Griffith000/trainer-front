@@ -7,6 +7,8 @@ const openrouter = createOpenRouter({
 export const MODELS = {
   trinity_large: "arcee-ai/trinity-large-preview:free",
   mistral_small: "mistralai/mistral-small-3.1-24b-instruct:free",
+  gemma_3_12b_it: "google/gemma-3-12b-it:free",
+  gpt_20b_oss: "openai/gpt-oss-20b:free",
 } as const;
 
 export type ModelKey = keyof typeof MODELS;
@@ -15,4 +17,4 @@ export function getModel(key: ModelKey) {
   return openrouter(MODELS[key]);
 }
 
-export const DEFAULT_MODEL: ModelKey = "trinity_large";
+export const DEFAULT_MODEL: ModelKey = "gpt_20b_oss";
