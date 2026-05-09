@@ -6,17 +6,24 @@ import {
 } from "ai";
 import type { NextRequest } from "next/server";
 
+import type { UserProfile } from "@/lib/types";
+import { getModel, DEFAULT_MODEL } from "@/lib/models";
 import { getProfile, saveMessages } from "@/app/chat/actions";
 import { getDietPlansTool, saveDietPlanTool } from "@/lib/ai/tools/diet-plans";
 import { updateGoalTool } from "@/lib/ai/tools/update-goal";
 import { getUserProfileTool } from "@/lib/ai/tools/user";
 import {
-  getWorkoutPlansTool,
   saveWorkoutPlanTool,
+  getWorkoutPlansTool,
 } from "@/lib/ai/tools/workout-plans";
-import { DEFAULT_MODEL, getModel } from "@/lib/models";
-import type { UserProfile } from "@/lib/types";
+import {
+  getRoutinesTool,
+  addRoutineTool,
+  updateRoutineTool,
+  deleteRoutineTool,
+} from "@/lib/ai/tools/routines";
 
+// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 function calculateAge(dateOfBirth: string): number {
@@ -41,6 +48,8 @@ function buildSystemPrompt(profile: UserProfile): string {
     "When you generate a workout plan, call saveWorkoutPlan immediately after presenting it to save it.",
     "When you generate a diet or nutrition plan, call saveDietPlan immediately after presenting it.",
     "When the user asks to see their saved plans, use getWorkoutPlans or getDietPlans.",
+    "When the user wants to view or manage their daily/weekly routine or schedule, use getRoutinesTool, addRoutineTool, updateRoutineTool, or deleteRoutineTool.",
+    "If addRoutineTool returns a conflict, ask the user if they want to overwrite the conflicting routine, move the new one, or cancel.",
     "",
     `The user's name is ${profile.full_name}.`,
     `They are approximately ${age} years old.`,
@@ -89,6 +98,10 @@ export async function POST(req: NextRequest) {
       getWorkoutPlans: getWorkoutPlansTool,
       saveDietPlan: saveDietPlanTool,
       getDietPlans: getDietPlansTool,
+      getRoutines: getRoutinesTool,
+      addRoutine: addRoutineTool,
+      updateRoutine: updateRoutineTool,
+      deleteRoutine: deleteRoutineTool,
     },
 
     onFinish: async ({ text }) => {

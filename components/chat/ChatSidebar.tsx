@@ -6,6 +6,7 @@ import {
   PanelLeftIcon,
   PlusIcon,
   Trash2Icon,
+  CalendarIcon,
   BookOpenIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -119,7 +120,17 @@ export function ChatSidebar({ onToggle }: { onToggle?: () => void } = {}) {
             <PlusIcon className="h-4 w-4" />
           </Button>
         </div>
-        <div className="px-3 py-2">
+        <div className="px-3 py-2 space-y-1">
+          <Link
+            href="/chat/routines"
+            className={cn(
+              "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
+              pathname === "/chat/routines" && "bg-muted text-primary",
+            )}
+          >
+            <CalendarIcon className="h-4 w-4" />
+            Weekly Routines
+          </Link>
           <Link
             href="/plans/workout"
             className={cn(

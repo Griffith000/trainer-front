@@ -61,3 +61,16 @@ export interface DietPlan {
   content: string;
   created_at: string;
 }
+
+export type DayName = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+export interface Routine {
+  id: string;
+  activity_name: string;
+  activity_description: string;
+  start_time: string; // HH:mm:ss
+  end_time: string;   // HH:mm:ss
+  day_name: DayName;
+  status: 'done' | 'not_done';
+  last_status_update: string;
+}
