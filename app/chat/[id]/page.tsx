@@ -32,6 +32,8 @@ import {
   ToolCall,
   ToolResult,
 } from "@/components/ai-elements/tool-invocation";
+import { useDataStream } from "@/components/data-stream-provider";
+import { useAutoResume } from "@/hooks/use-auto-resume";
 import { api } from "@/lib/api/client";
 import type { ChatMessage } from "@/lib/types";
 
@@ -85,13 +87,31 @@ export default function SessionPage() {
   const sessionIdRef = useRef(sessionId);
   sessionIdRef.current = sessionId;
 
+  const { setDataStream } = useDataStream();
+
   const transport = useMemo(
     () => new DefaultChatTransport({ api: "/api/chat" }),
     [],
   );
 
-  const { messages, status, sendMessage, setMessages, stop } = useChat({
-    transport,
+  const { messages, status, sendMessage, setMessages, stop, resumeStream } =
+    useChat({
+      id: sessionId,
+      transport,
+      resume: true,
+      onData: (data) => {
+        setDataStream((prev) => [...(prev || []), data]);
+      },
+      onFinish: () => {
+        setDataStream(() => []);
+      },
+    });
+
+  useAutoResume({
+    autoResume: true,
+    initialMessages: history?.map(toUIMessage) ?? [],
+    resumeStream,
+    setMessages,
   });
 
   const isStreaming = status === "submitted" || status === "streaming";
