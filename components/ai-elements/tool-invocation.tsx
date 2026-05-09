@@ -61,7 +61,6 @@ export const ToolResult = ({
 );
 
 export type Plan = {
-  id: string;
   title: string;
   content: string;
   created_at: string;
@@ -73,7 +72,7 @@ export type PlanListProps = {
 };
 
 export const PlanList = ({ plans, onDownload }: PlanListProps) => {
-  const [expanded, setExpanded] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<number | null>(null);
 
   if (plans.length === 0) {
     return (
@@ -90,13 +89,13 @@ export const PlanList = ({ plans, onDownload }: PlanListProps) => {
         <CheckCircleIcon className="h-3 w-3 shrink-0" />
         {plans.length} saved plan{plans.length !== 1 ? "s" : ""}
       </div>
-      {plans.map((plan) => (
-        <div key={plan.id} className="flex flex-col gap-1 pl-4">
+      {plans.map((plan, index) => (
+        <div key={index} className="flex flex-col gap-1 pl-4">
           <div className="flex items-center gap-2">
             <span className="flex-1 truncate">{plan.title}</span>
             <button
               type="button"
-              onClick={() => setExpanded(expanded === plan.id ? null : plan.id)}
+              onClick={() => setExpanded(expanded === index ? null : index)}
               className="flex items-center gap-0.5 rounded px-1.5 py-0.5 hover:bg-green-100 dark:hover:bg-green-800/30"
               title="Preview"
             >
@@ -113,7 +112,7 @@ export const PlanList = ({ plans, onDownload }: PlanListProps) => {
               Download
             </button>
           </div>
-          {expanded === plan.id && (
+          {expanded === index && (
             <pre className="max-h-48 overflow-y-auto whitespace-pre-wrap rounded border border-green-200 bg-white p-2 text-xs text-slate-700 dark:border-green-800 dark:bg-slate-900 dark:text-slate-300">
               {plan.content}
             </pre>

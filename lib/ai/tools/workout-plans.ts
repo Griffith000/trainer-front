@@ -71,12 +71,11 @@ export const getWorkoutPlansTool = tool({
     const plans = await res.json();
     return {
       success: true as const,
-      plans: plans as Array<{
-        id: string;
-        title: string;
-        created_at: string;
-        content: string;
-      }>,
+      plans: plans.map((p: { title: string; created_at: string; content: string }) => ({
+        title: p.title,
+        created_at: p.created_at,
+        content: p.content,
+      })),
     };
   },
 });
