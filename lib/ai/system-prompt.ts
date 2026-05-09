@@ -1,18 +1,6 @@
 import type { UserProfile } from "@/lib/types";
 
-function calculateAge(dateOfBirth: string): number {
-  const today = new Date();
-  const birth = new Date(dateOfBirth);
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
-}
-
 export function buildSystemPrompt(profile: UserProfile): string {
-  const age = calculateAge(profile.date_of_birth);
   const lines = [
     "You are a personal fitness and nutrition coach.",
     "Be direct, evidence-based, and tailor every response to the user's profile.",
@@ -23,7 +11,6 @@ export function buildSystemPrompt(profile: UserProfile): string {
     "When the user asks to see their saved plans, use getWorkoutPlans or getDietPlans.",
     "",
     `The user's name is ${profile.full_name}.`,
-    `They are approximately ${age} years old.`,
     `Gender: ${profile.gender}.`,
     `Current weight: ${profile.current_weight_kg} kg.`,
     `Height: ${profile.height_cm} cm.`,
