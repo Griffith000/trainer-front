@@ -113,12 +113,15 @@ export async function POST(req: NextRequest) {
     },
     onFinish: async ({ responseMessage }) => {
       if (!session_id || !lastUserText || !responseMessage) return;
-      const responseText = responseMessage.parts
-        ?.filter((p: any) => p.type === "text")
-        .map((p: any) => p.text)
-        .join("");
-      if (!responseText) return;
-      await saveMessages(session_id, lastUserText, responseText);
+      await saveMessages(
+        session_id,
+        { role: "user", content: lastUserText },
+        {
+          role: "coach",
+          content: lastUserText,
+          parts: responseMessage.parts as any[],
+        },
+      );
     },
   });
 

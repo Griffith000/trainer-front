@@ -55,23 +55,23 @@ export async function patchProfile(
 
 export async function saveMessages(
   sessionId: string,
-  userText: string,
-  coachText: string,
+  userMessage: { role: string; content: string },
+  coachMessage: { role: string; content: string; parts?: any[] },
 ): Promise<void> {
   const cookieHeader = (await cookies()).toString();
 
-  const post = (role: "user" | "coach", content: string) =>
+  const post = (msg: { role: string; content: string; parts?: any[] }) =>
     fetch(`${apiBase}/api/chat/sessions/${sessionId}/messages/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         cookie: cookieHeader,
       },
-      body: JSON.stringify({ role, content }),
+      body: JSON.stringify(msg),
     });
 
-  await post("user", userText);
-  await post("coach", coachText);
+  await post(userMessage);
+  await post(coachMessage);
 }
 
 export async function generateSessionTitle(
