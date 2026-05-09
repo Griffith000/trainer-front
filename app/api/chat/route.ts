@@ -2,6 +2,7 @@ import {
   convertToModelMessages,
   createUIMessageStream,
   createUIMessageStreamResponse,
+  smoothStream,
   stepCountIs,
   streamText,
   type UIMessage,
@@ -29,7 +30,11 @@ import {
   saveWorkoutPlanTool,
 } from "@/lib/ai/tools/workout-plans";
 import { DEFAULT_MODEL, getModel } from "@/lib/models";
-import { setLatestStreamId } from "@/lib/redis/client";
+import {
+  getIoredisPublisher,
+  getIoredisSubscriber,
+  setLatestStreamId,
+} from "@/lib/redis/client";
 
 export const maxDuration = 60;
 
@@ -40,6 +45,8 @@ export function getStreamContext() {
     try {
       globalStreamContext = createResumableStreamContext({
         waitUntil: after,
+        publisher: getIoredisPublisher(),
+        subscriber: getIoredisSubscriber(),
       });
     } catch (error: any) {
       if (error.message.includes("REDIS_URL")) {
@@ -84,6 +91,10 @@ export async function POST(req: NextRequest) {
         temperature: 0.4,
         stopWhen: stepCountIs(5),
         abortSignal: req.signal,
+        experimental_transform: smoothStream({
+          delayInMs: 20,
+          chunking: "word",
+        }),
         tools: {
           updateGoal: updateGoalTool,
           getUserProfile: getUserProfileTool,

@@ -1,17 +1,22 @@
+import Redis from "ioredis";
 import { createClient, type RedisClientType } from "redis";
 
 let client: RedisClientType | null = null;
+let ioredisPublisher: Redis | null = null;
+let ioredisSubscriber: Redis | null = null;
+
+function getRedisUrl(): string {
+  const redisUrl = process.env.REDIS_URL || process.env.KV_URL;
+  if (!redisUrl) {
+    throw new Error("REDIS_URL or KV_URL environment variable is required");
+  }
+  return redisUrl;
+}
 
 export async function getRedisClient(): Promise<RedisClientType> {
   if (!client) {
-    const redisUrl = process.env.REDIS_URL || process.env.KV_URL;
-
-    if (!redisUrl) {
-      throw new Error("REDIS_URL or KV_URL environment variable is required");
-    }
-
     client = createClient({
-      url: redisUrl,
+      url: getRedisUrl(),
       socket: {
         connectTimeout: 5000,
       },
@@ -22,14 +27,44 @@ export async function getRedisClient(): Promise<RedisClientType> {
       client = null;
     });
 
-    client.on("connect", () => {
-      console.log("Redis client connected");
-    });
-
     await client.connect();
   }
 
   return client;
+}
+
+export function getIoredisPublisher(): Redis {
+  if (!ioredisPublisher) {
+    ioredisPublisher = new Redis(getRedisUrl(), {
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
+      connectTimeout: 5000,
+    });
+
+    ioredisPublisher.on("error", (err) => {
+      console.error("ioredis publisher error:", err);
+      ioredisPublisher = null;
+    });
+  }
+
+  return ioredisPublisher;
+}
+
+export function getIoredisSubscriber(): Redis {
+  if (!ioredisSubscriber) {
+    ioredisSubscriber = new Redis(getRedisUrl(), {
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
+      connectTimeout: 5000,
+    });
+
+    ioredisSubscriber.on("error", (err) => {
+      console.error("ioredis subscriber error:", err);
+      ioredisSubscriber = null;
+    });
+  }
+
+  return ioredisSubscriber;
 }
 
 export async function getLatestStreamId(
