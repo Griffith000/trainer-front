@@ -46,6 +46,13 @@ const SUGGESTIONS = [
 
 function toUIMessage(msg: ChatMessage) {
   const role = msg.role === "coach" ? "assistant" : "user";
+  if (msg.parts && msg.parts.length > 0) {
+    return {
+      id: msg.id,
+      role: role as "user" | "assistant",
+      parts: msg.parts,
+    };
+  }
   return {
     id: msg.id,
     role: role as "user" | "assistant",

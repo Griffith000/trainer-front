@@ -10,6 +10,7 @@ export interface ChatMessage {
   session: string;
   role: "user" | "coach";
   content: string;
+  parts?: any[];
   created_at: string;
 }
 
@@ -62,15 +63,22 @@ export interface DietPlan {
   created_at: string;
 }
 
-export type DayName = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+export type DayName =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
 
 export interface Routine {
   id: string;
   activity_name: string;
   activity_description: string;
   start_time: string; // HH:mm:ss
-  end_time: string;   // HH:mm:ss
+  end_time: string; // HH:mm:ss
   day_name: DayName;
-  status: 'done' | 'not_done';
+  status: "done" | "not_done";
   last_status_update: string;
 }
