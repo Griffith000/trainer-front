@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TrainerAI Frontend
+
+**Author:** Ghassen Latrach — ING A2, Groupe 4
+
+AI-powered fitness trainer web application. Provides users with personalized workout and diet plans through an interactive AI chat assistant.
+
+## Features
+
+- **AI Chat Assistant** — Conversational interface to get fitness advice, workout suggestions, and nutrition tips
+- **Personalized Workout Plans** — AI-generated workout routines tailored to user goals and fitness level
+- **Diet Plans** — Customized nutrition plans based on dietary preferences and objectives
+- **Onboarding Flow** — Initial survey to understand user goals, experience level, and preferences
+- **User Profile** — Track progress, manage preferences, and view history
+- **Authentication** — Secure login and registration system
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **UI Library:** React 19
+- **Styling:** TailwindCSS 4 + shadcn/ui
+- **AI Integration:** Vercel AI SDK 
+- **State Management:** React Query, React Hook Form
+- **Validation:** Zod
+- **Calendar:** FullCalendar
 
 ## Getting Started
 
-First, run the development server:
+### Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Griffith000/trainer-front.git
+cd trainer-front
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Configure environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file in the project root with the following variables:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# OpenRouter API key
+OPENROUTER_API_KEY=your_openrouter_key
 
-## Learn More
+# Redis connection
+REDIS_URL=your_redis_url
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Install and run
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm install
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The frontend runs on `http://localhost:3000`.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Note:** This frontend requires the backend to be running. See the [TrainerAI Backend](https://github.com/SlamZDank/TrainerAI) for setup instructions.
