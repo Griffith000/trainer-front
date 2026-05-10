@@ -2,7 +2,7 @@
 
 **Author:** Ghassen Latrach — ING A2, Groupe 4
 
-AI-powered fitness trainer web application. Provides users with personalized workout and diet plans through an interactive AI chat assistant.
+AI-powered fitness trainer web application. Provides users with personalized workout and diet plans through an interactive AI chat assistant. Powered by [OpenRouter](https://openrouter.ai/).
 
 ## Features
 
@@ -48,10 +48,10 @@ REDIS_URL=your_redis_url
 
 ```bash
 pnpm install
-pnpm dev
+pnpm run dev
 ```
 
-The frontend runs on `http://localhost:3000`.
+The frontend runs on `http://localhost:3000` by default.
 
 ---
 
